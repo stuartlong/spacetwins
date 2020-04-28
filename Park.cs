@@ -1,3 +1,17 @@
+/******************
+
+Auto-parks a ship. Requires relevant block or group names to be supplied in custom data as follows:
+
+[names]
+gears=My Landing Gear Names
+thrusters=My Thruster Names
+connector=My Connector Name
+reactors=My Reactors
+tanks=My H2 / O2 Tanks
+batteries=My batteries
+
+********************/
+
 MyIni _ini = new MyIni();
 string status = "park";
 
@@ -13,43 +27,43 @@ public Program() {
 public void Main() {
     if (this.status == "launch") {
         Echo("parking");
-        // lock the landing gears
+        Echo("lock the landing gears");
         this.RunActionOnBlocks("gears", "Lock");
 
-        // turn off engines
+        Echo("turn off engines");
         this.RunActionOnBlocks("thrusters", "OnOff_Off");
 
-        // lock connector
-        this.RunActionOnBlocks("connector", "Connect");
+        Echo("lock connector");
+        this.RunActionOnBlocks("connectors", "Connect");
         
-        // turn off reactor
-        this.RunActionOnBlocks("reactor", "OnOff_Off");
+        Echo("turn off reactor");
+        this.RunActionOnBlocks("reactors", "OnOff_Off");
 
-        // stockpile tanks
+        Echo("stockpile tanks");
         this.RunActionOnBlocks("tanks", "Stockpile_On");
 
-        // recharge batteries
+        Echo("recharge batteries");
         this.RunActionOnBlocks("batteries", "Recharge");
 
         this.status = "park";
     } else if (this.status == "park") {
         Echo("launching");
-        // enable batteries
+        Echo("enable batteries");
         this.RunActionOnBlocks("batteries", "Auto");
 
-        // stop stockpile
+        Echo("stop stockpile");
         this.RunActionOnBlocks("tanks", "Stockpile_Off");
         
-        // turn on reactor
+        Echo("turn on reactor");
         this.RunActionOnBlocks("reactor", "OnOff_On");
 
-        // ulock connector
+        Echo("ulock connector");
         this.RunActionOnBlocks("connector", "Disconnect");
 
-        // turn on engines
+        Echo("turn on engines");
         this.RunActionOnBlocks("thrusters", "OnOff_On");
 
-        // lock the landing gears
+        Echo("lock the landing gears");
         this.RunActionOnBlocks("gears", "Lock");
 
         this.status = "launch";
