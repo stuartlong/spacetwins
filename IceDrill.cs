@@ -124,10 +124,12 @@ bool RoomToRun() {
         IMyInventory inv = container.GetInventory(0);
         MyFixedPoint currentVolume = inv.CurrentVolume;
         if (currentVolume.RawValue < 1000) {
+            Echo("Has room to run with content size " + currentVolume.RawValue);
             return true;
         }
     }
 
+    Echo("No room to run");
     return false;
 }
 

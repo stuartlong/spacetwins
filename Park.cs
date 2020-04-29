@@ -5,7 +5,7 @@ Auto-parks a ship. Requires relevant block or group names to be supplied in cust
 [names]
 gears=My Landing Gear Names
 thrusters=My Thruster Names
-connector=My Connector Name
+connectors=My Connector Name
 reactors=My Reactors
 tanks=My H2 / O2 Tanks
 batteries=My batteries
@@ -111,9 +111,9 @@ List<IMyTerminalBlock> GetBlockGroup(string name) {
         if (block != null) {
             Echo("Found block");
             blocks.Add(block);
+        } else {
+            Echo("found nothing");
         }
-
-        Echo("found nothing");
     }
     return blocks;
 }
