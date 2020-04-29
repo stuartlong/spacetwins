@@ -70,8 +70,11 @@ public void Main() {
 	{
 		
 		IMyInventory connectorInventory = connector.GetInventory(0);
-		//The sorters in the base should deal with not moving items where they don't belong. 
-		MoveAllItems(connectorInventory,invLargeInv1);
+		//The sorters in the base should deal with not moving items where they don't belong.
+		if(largeInv1.CubeGrid == connector.CubeGrid){
+			
+			MoveAllItems(connectorInventory,invLargeInv1);
+		}
 		MoveAllItems(connectorInventory,oreLargeInv1);
 	}
 	MyFixedPoint currentInvVolume = invLargeInv1.CurrentVolume;
