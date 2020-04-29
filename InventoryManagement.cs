@@ -66,7 +66,7 @@ public void Main() {
 		MoveAllItems(assemInventory, invLargeInv1);
 	}
 	//loop through the connecters and move any ore to the ore container and any components to the sorter
-	foreach (IMyConnector connector in ListOfConnectors)
+	foreach (IMyShipConnector connector in ListOfConnectors)
 	{
 		
 		IMyInventory connectorInventory = connector.GetInventory(0);
