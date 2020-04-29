@@ -15,6 +15,13 @@ batteries=My batteries
 MyIni _ini = new MyIni();
 string status = "park";
 
+string gearsName;
+string thrustersName;
+string connectorsName;
+string reactorsName;
+string tanksName;
+string batteriesName;
+
 public Program() {
     Runtime.UpdateFrequency = UpdateFrequency.None;
 
@@ -22,49 +29,57 @@ public Program() {
     if (!this._ini.TryParse(Me.CustomData, out data)) {
         throw new Exception("failed to parse custom data");
     }
+
+    this.gearsName = this._ini.Get("names", "gears").ToString();
+    this.thrustersName = this._ini.Get("names", "thrusters").ToString();
+    this.connectorsName = this._ini.Get("names", "connectors").ToString();
+    this.reactorsName = this._ini.Get("names", "reactors").ToString();
+    this.tanksName = this._ini.Get("names", "tanks").ToString();
+    this.batteriesName = this._ini.Get("names", "batteries").ToString();
 }
 
 public void Main() {
     if (this.status == "launch") {
         Echo("parking");
+
         Echo("lock the landing gears");
-        this.RunActionOnBlocks("gears", "Lock");
+        this.RunActionOnBlocks(this.gearsName, "Lock");
 
         Echo("turn off engines");
-        this.RunActionOnBlocks("thrusters", "OnOff_Off");
+        this.RunActionOnBlocks(this.thrustersName, "OnOff_Off");
 
-        Echo("lock connector");
-        this.RunActionOnBlocks("connectors", "Connect");
-        
         Echo("turn off reactor");
-        this.RunActionOnBlocks("reactors", "OnOff_Off");
+        this.RunActionOnBlocks(this.reactorsName, "OnOff_Off");
 
         Echo("stockpile tanks");
-        this.RunActionOnBlocks("tanks", "Stockpile_On");
+        this.RunActionOnBlocks(this.tanksName, "Stockpile_On");
 
         Echo("recharge batteries");
-        this.RunActionOnBlocks("batteries", "Recharge");
+        this.RunActionOnBlocks(this.batteriesName, "Recharge");
+
+        Echo("lock connector");
+        this.RunActionOnBlocks(this.connectorsName, "Lock");
 
         this.status = "park";
     } else if (this.status == "park") {
         Echo("launching");
         Echo("enable batteries");
-        this.RunActionOnBlocks("batteries", "Auto");
+        this.RunActionOnBlocks(this.batteriesName, "Auto");
 
         Echo("stop stockpile");
-        this.RunActionOnBlocks("tanks", "Stockpile_Off");
-        
-        Echo("turn on reactor");
-        this.RunActionOnBlocks("reactor", "OnOff_On");
+        this.RunActionOnBlocks(this.tanksName, "Stockpile_Off");
 
-        Echo("ulock connector");
-        this.RunActionOnBlocks("connector", "Disconnect");
+        Echo("turn on reactor");
+        this.RunActionOnBlocks(this.reactorsName, "OnOff_On");
 
         Echo("turn on engines");
-        this.RunActionOnBlocks("thrusters", "OnOff_On");
+        this.RunActionOnBlocks(this.thrustersName, "OnOff_On");
 
         Echo("lock the landing gears");
-        this.RunActionOnBlocks("gears", "Lock");
+        this.RunActionOnBlocks(this.gearsName, "Lock");
+
+        Echo("unlock connector");
+        this.RunActionOnBlocks(this.connectorsName, "Unlock");
 
         this.status = "launch";
     } else {
@@ -73,10 +88,11 @@ public void Main() {
 }
 
 void RunActionOnBlocks(string name, string action) {
-    string blockNames = this._ini.Get("names", name).ToString();
-    if (blockNames != null && blockNames != "") {
-        List<IMyTerminalBlock> blocks = this.GetBlockGroup(blockNames);
-        foreach(IMyTerminalBlock block in blocks) {
+    Echo("running <" + action + "> on block or group with name <" + name + ">");
+    if (name != null && name != "") {
+        List<IMyTerminalBlock> blocks = this.GetBlockGroup(name);
+        foreach (IMyTerminalBlock block in blocks) {
+            Echo("Do action");
             block.GetActionWithName(action).Apply(block);
         }
     }
@@ -85,10 +101,19 @@ void RunActionOnBlocks(string name, string action) {
 List<IMyTerminalBlock> GetBlockGroup(string name) {
     List<IMyTerminalBlock> blocks = new List<IMyTerminalBlock>();
     var pistonsBlock = GridTerminalSystem.GetBlockGroupWithName(name);
-    if (pistonsBlock) {
+    if (pistonsBlock != null) {
+        Echo("Found block group");
         pistonsBlock.GetBlocks(blocks);
     } else {
-        blocks.Add(GridTerminalSystem.GetBlockWithName(name));
-    } 
+        Echo("Look for individual block");
+        IMyTerminalBlock block = GridTerminalSystem.GetBlockWithName(name);
+
+        if (block != null) {
+            Echo("Found block");
+            blocks.Add(block);
+        }
+
+        Echo("found nothing");
+    }
     return blocks;
 }
