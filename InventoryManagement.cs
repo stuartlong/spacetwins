@@ -48,17 +48,34 @@ public Program() {
 
 public void Main() {
 	IMyCargoContainer largeInv1 = GridTerminalSystem.GetBlockWithName("Large Cargo Inventory 1") as IMyCargoContainer;
-	IMyTextPanel LCDPanel = GridTerminalSystem.GetBlockWithName("Inventory Manager Panel") as IMyTextPanel;
-	IMyInventory invLargeInv1 = largeInv1.GetInventory(0);
-	int i = 0;
+	IMyCargoContainer largeOre1 = GridTerminalSystem.GetBlockWithName("Large Cargo Ore 1") as IMyCargoContainer;
+	
 
+	IMyInventory invLargeInv1 = largeInv1.GetInventory(0);
+	IMyInventory oreLargeInv1 = largeOre1.GetInventory(0);
+
+	IMyTextPanel LCDPanel = GridTerminalSystem.GetBlockWithName("Inventory Manager Panel") as IMyTextPanel;
 	List<IMyShipConnector> ListOfConnectors = GetConnectors();
 	List<IMyAssembler> ListOfAssemblers = GetAssemblers();
 	List<IMyCargoContainer> ListOfCargo = GetCargoContainers();
-	foreach (IMyAssembler assembler in ListOfAssemblers) // Loop through List with foreach
+	
+	//loop through the assemblers and move any completed items to the inventory cargo container
+	foreach (IMyAssembler assembler in ListOfAssemblers) 
 	{
 		IMyInventory assemInventory = assembler.GetInventory(1);
 		MoveAllItems(assemInventory, invLargeInv1);
+	}
+	//loop through the connecters and move any ore to the ore container and any components to the sorter
+	foreach (IMyShipConnector connector in ListOfConnectors)
+	{
+		
+		IMyInventory connectorInventory = connector.GetInventory(0);
+		//The sorters in the base should deal with not moving items where they don't belong.
+		if(largeInv1.CubeGrid == connector.CubeGrid){
+			
+			MoveAllItems(connectorInventory,invLargeInv1);
+		}
+		MoveAllItems(connectorInventory,oreLargeInv1);
 	}
 	MyFixedPoint currentInvVolume = invLargeInv1.CurrentVolume;
 	MyFixedPoint maxInvVolume = invLargeInv1.MaxVolume;
