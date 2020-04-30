@@ -49,10 +49,11 @@ public Program() {
 public void Main() {
 	IMyCargoContainer largeInv1 = GridTerminalSystem.GetBlockWithName("Large Cargo Inventory 1") as IMyCargoContainer;
 	IMyCargoContainer largeOre1 = GridTerminalSystem.GetBlockWithName("Large Cargo Ore 1") as IMyCargoContainer;
-	
+	IMyCargoContainer tempIce = GridTerminalSystem.GetBlockWithName("Temp Ice Storage") as IMyCargoContainer;
 
 	IMyInventory invLargeInv1 = largeInv1.GetInventory(0);
 	IMyInventory oreLargeInv1 = largeOre1.GetInventory(0);
+	IMyInventory tempIceInv = tempIce.GetInventory(0);
 
 	IMyTextPanel LCDPanel = GridTerminalSystem.GetBlockWithName("Inventory Manager Panel") as IMyTextPanel;
 	List<IMyShipConnector> ListOfConnectors = GetConnectors();
@@ -76,6 +77,16 @@ public void Main() {
 			MoveAllItems(connectorInventory,invLargeInv1);
 		}
 		MoveAllItems(connectorInventory,oreLargeInv1);
+	}
+	
+	//move ice
+	foreach (IMyCargoContainer largeIce in ListOfCargo)
+	{
+		IMyInventory largeIceInv = largeIce.GetInventory(0);
+		if(largeIce.CustomName.Contains("Large Ice Cargo"))
+		{
+			MoveAllItems(largeIceInv,tempIceInv);
+		} 
 	}
 	MyFixedPoint currentInvVolume = invLargeInv1.CurrentVolume;
 	MyFixedPoint maxInvVolume = invLargeInv1.MaxVolume;
