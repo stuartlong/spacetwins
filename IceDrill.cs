@@ -123,9 +123,11 @@ bool RoomToRun() {
     foreach (IMyTerminalBlock container in cargo) {
         IMyInventory inv = container.GetInventory(0);
         MyFixedPoint currentVolume = inv.CurrentVolume;
-        if (currentVolume.RawValue < 1000) {
+        if (currentVolume.RawValue < 100) {
             Echo("Has room to run with content size " + currentVolume.RawValue);
             return true;
+        } else {
+            Echo("No room to run with content size " + currentVolume.RawValue);
         }
     }
 
