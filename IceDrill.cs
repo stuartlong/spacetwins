@@ -104,6 +104,13 @@ void ToggleDrills(bool on) {
     List<IMyTerminalBlock> drills = new List<IMyTerminalBlock>();
     var drillGroup = GridTerminalSystem.GetBlockGroupWithName("Ice Drill - Drills");
     drillGroup.GetBlocks(drills);
+    
+    
+    Echo("Turning off Ice Output");
+    IMyConveyorSorter iceOutPutSorter = GridTerminalSystem.GetBlockWithName("Ice Output Sorter") as IMyConveyorSorter;
+    string isOff = "OnOff_Off";
+    iceOutPutSorter.GetActionWithName(isOff).Apply(iceOutPutSorter);
+      
 
     foreach (IMyTerminalBlock drill in drills) {
         string action = "OnOff_Off";
@@ -130,8 +137,11 @@ bool RoomToRun() {
             Echo("No room to run with content size " + currentVolume.RawValue);
         }
     }
-
-    Echo("No room to run");
+    Echo("Turning IceOutPut sorter on");
+    IMyConveyorSorter iceOutPutSorter = GridTerminalSystem.GetBlockWithName("Ice Output Sorter") as IMyConveyorSorter;
+    string isOn = "OnOff_On";
+    iceOutPutSorter.GetActionWithName(isOn).Apply(iceOutPutSorter);
+    
     return false;
 }
 
